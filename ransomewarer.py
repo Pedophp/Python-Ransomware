@@ -22,7 +22,7 @@ import socket
 
 SEPARATOR = "<SEPARATOR>"
 BUFFER_SIZE = 4096
-host = "192.168.1.8"
+host = "YOUR IP ADDRESS"
 port = 5001
 
 
