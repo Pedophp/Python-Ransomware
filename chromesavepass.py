@@ -6,8 +6,8 @@ import socket
 
 SEPARATOR = "<SEPARATOR>"
 BUFFER_SIZE = 4096
-host = "localhost"
-port = 5001
+host = "YOUR IP ADDRESS"
+port = 5001 # you can change it any available port , do so in both client and server side scripts
 
 
 def get_chrome():
