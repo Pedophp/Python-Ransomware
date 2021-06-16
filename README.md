@@ -23,7 +23,7 @@ the victim is instructed to send this text file to an email address. When the at
 
 
 
-#FEATURES OF RANSOMEWARER.PY :
+# FEATURES OF RANSOMEWARER.PY :
 - Encryptes specified data
 - Changes backgorund to a scary image (u can change imange url on line 120)
 - Creates a text file named Ransome.txt in which instructions are given in order to get back the files(paying in bitcoin)( the ransome note is on line 131)
