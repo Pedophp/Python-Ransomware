@@ -12,7 +12,7 @@ chromefetch.py - prints the saved passwords on the terminal(doesnt saves or send
 chromesavepass.py - saves fetched passes to a txt file named passtxt.txt on the desktop of the victim and then sends it to the attcker via socket(change host on line 9 if not on the same network)( gives error on chrome version 80 or above but gets the job done )
 
 
-login.py - same as chromefetch.py but doesnt give any error 
+login.py - same as chromefetch.py but it saves the passes in a text file on the desktop ,  doesnt give any error 
 
 
 gen_public_private_keys.py - this is the first script you wanna run ( attacker) this genrates two asymmetric rsa keys namely public.pem and private.pem
